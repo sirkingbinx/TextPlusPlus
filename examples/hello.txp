@@ -1,0 +1,8 @@
+# Comment
+
+# Variable
+$hello = This is a message
+
+# Use a Variable
+# Result: This is a message
+$hello
