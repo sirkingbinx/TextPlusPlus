@@ -1,0 +1,6 @@
+$var1 = thing
+$var2 = ${var1}2
+# experimenting with ${var_name} to make it possible to combine strings and shit together
+
+%print $var1
+# output: thing2
