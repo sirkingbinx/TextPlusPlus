@@ -1,8 +1,6 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace TextPlusPlus
@@ -33,20 +31,22 @@ namespace TextPlusPlus
                 string thisVarName = "";
                 int lastNextIndex = 0;
 
-                for (int idx = line.IndexOf("$") + 1; idx < line.Length; idx++)
-                {
-                    // remember your raw C syntax folks!
-                    // "" = string
-                    // '' = char
-
-                    if (line[idx] != ' ')
-                        thisVarName += line[idx];
-                    else
-                        lastNextIndex = idx; break;
+                if (line[line.IndexOf("$") + 1] == '{') {
+                    for (int idx = line.IndexOf("$") + 2; idx < line.Length; idx++)
+                    {
+                        // remember your raw C syntax folks!
+                        // "" = string
+                        // '' = char
+    
+                        if (line[idx] != '}')
+                            thisVarName += line[idx];
+                        else
+                            lastNextIndex = idx; break;
+                    }
                 }
 
                 if (Variables.ContainsKey(thisVarName))
-                    nl.Replace($"${thisVarName}", Variables[thisVarName]);
+                    nl.Replace($"$\{{thisVarName}\}", Variables[thisVarName]);
                 else
                     // lastly, check if it's defining the thing
                     
@@ -59,7 +59,7 @@ namespace TextPlusPlus
                             thisValue += line[idx];
                         }
 
-                        Variables.Add(thisVarName, thisValue);
+                        Variables.Add(thisVarName, TryProcessMath(thisValue));
                         nl = "";
                         // define variables: $coolVariable = value
                     }
@@ -71,6 +71,13 @@ namespace TextPlusPlus
         public static void DefineVariable(string name, string value)
         {
             Variables.Add(name, value);
+        }
+
+        public static string GetVariable(string name)
+        {
+            if (Variables.ContainsKey(name)) return Variables[name];
+            return "";
+            
         }
 
         public static List<string> ParseSourceFile(string path)
@@ -106,7 +113,7 @@ namespace TextPlusPlus
             return false;
         }
 
-        internal static float ProcessMath(string query2)
+        internal static string TryProcessMath(string query2)
         {
             string query = query2.Replace(' ', '');
             string n1;
@@ -148,18 +155,18 @@ namespace TextPlusPlus
             switch (operation)
             {
                 case "add":
-                    return float.TryParse(n1) + float.TryParse(n2);
+                    return float.TryParse(n1) + float.TryParse(n2).ToString();
                 case "sub":
-                    return float.TryParse(n1) - float.TryParse(n2);
+                    return float.TryParse(n1) - float.TryParse(n2).ToString();
                 case "mul":
-                    return float.TryParse(n1) * float.TryParse(n2);
+                    return float.TryParse(n1) * float.TryParse(n2).ToString();
                 case "div":
-                    return float.TryParse(n1) / float.TryParse(n2);
+                    return float.TryParse(n1) / float.TryParse(n2).ToString();
                 case "pwr":
-                    return float.TryParse(n1)^float.TryParse(n2);
+                    return float.TryParse(n1)^float.TryParse(n2).ToString();
             }
 
-            return "";
+            return query2;
         }
     }
 }
