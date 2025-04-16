@@ -1,0 +1,18 @@
+# Addition ( + )
+# Subtraction ( - )
+# Multiplication ( * )
+# Division (/)
+# Exponent ( ^ )
+
+$add1 = 5 + 6 
+# Unfortunately can only add 2 numbers at a time.
+# Will fix later, you can add multiple things with vars
+
+$x = 1
+$mx = 5 * ${x}
+$b = 0
+
+$y = ${mx} + ${b}
+
+# 25
+$power = 5^2
